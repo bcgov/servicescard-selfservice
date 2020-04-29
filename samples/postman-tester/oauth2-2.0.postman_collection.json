@@ -1,0 +1,54 @@
+{
+	"id": "4deae221-8958-4607-b514-691ad312b043",
+	"name": "BSCS OAuth 2.0",
+	"values": [
+		{
+			"key": "client_id",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "client_secret",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "redirect_uri",
+			"value": "https://redirect.me",
+			"enabled": true
+		},
+		{
+			"key": "authURI",
+			"value": "https://idtest.gov.bc.ca/login/oidc/authorize/",
+			"enabled": true
+		},
+		{
+			"key": "accessTokenURI",
+			"value": "https://idtest.gov.bc.ca/oauth2/token",
+			"enabled": true
+		},
+		{
+			"key": "scope",
+			"value": "openid profile email address",
+			"enabled": true
+		},
+		{
+			"key": "state",
+			"value": "SomeStateString",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2019-11-07T13:46:19.270Z",
+	"_postman_exported_using": "Postman/7.10.0"
+}

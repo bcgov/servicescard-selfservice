@@ -1,0 +1,13 @@
+<a href="/users">Users</a> | <a href="/logout">Logout</a>
+<h1>{{title}}</h1>
+<p><b>User Id:</b> {{user.sub}}</p>
+<p><b>Name:</b> {{user.display_name}}</p>
+<p><b>Given Name:</b> {{user.given_names}}</p>
+<p><b>Family Name:</b> {{user.family_name}}</p>
+<p><b>Email:</b> {{user.email}}</p>
+<p><b>Address:</b> </p>
+      <p>&nbsp;Street:{{user.address.street_address}}</p>
+      <p>&nbsp;Locality:{{user.address.locality}}</p>
+      <p>&nbsp;Region:{{user.address.region}}</p>
+      <p>&nbsp;Country:{{user.address.country}}</p>
+      <p>&nbsp;Post Code:{{user.address.postal_code}}</p>

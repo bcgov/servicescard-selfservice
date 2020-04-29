@@ -1,0 +1,27 @@
+{
+  "name": "auth-flow",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "start-enc": "node ./bin/www-encr"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "dotenv": "^5.0.0",
+    "express": "^4.17.1",
+    "express-session": "^1.15.6",
+    "hbs": "^4.1.1",
+    "jsonwebtoken": "latest",
+    "jwks-rsa": "latest",
+    "morgan": "^1.9.1",
+    "node-jose": "^1.1.4",
+    "openid-client": "^3.14.2",
+    "passport": "^0.4.0",
+    "passport-openidconnect": "0.0.2",
+    "request": "^2.88.0",
+    "serve-favicon": "~2.4.2"
+  }
+}

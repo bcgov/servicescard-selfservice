@@ -1,0 +1,83 @@
+{
+	"info": {
+		"_postman_id": "125f311e-ef05-48eb-9978-b375466d78b3",
+		"name": "BCSC OAuth 2.0",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Basic Authorise Test",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0e37c12b-9b8b-48ee-8c83-52a021668330",
+						"exec": [
+							"tests['Response does not contain errortitle'] = pm.response.to.not.be.error && pm.expect(pm.response.text()).not.to.include('errortitle')"
+					],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://idtest.gov.bc.ca/login/oidc/authorize",
+					"protocol": "https",
+					"host": [
+						"idtest",
+						"gov",
+						"bc",
+						"ca"
+					],
+					"path": [
+						"login",
+						"oidc",
+						"authorize"
+					],
+					"query": [
+						{"key" : "response_type", "value": "code" },
+						{"key" : "scope", "value": "{{scope}}" },
+						{"key" : "client_id", "value": "{{client_id}}" },
+						{"key" : "redirect_uri", "value": "{{redirect_uri}}" }
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Attributes",
+			"request": {
+				"auth": {
+					"type": "oauth2"
+				},
+				"method": "GET",
+
+				"url": {
+					"raw": "https://idtest.gov.bc.ca/oauth2/userinfo",
+					"protocol": "https",
+					"host": [
+						"idtest",
+						"gov",
+						"bc",
+						"ca"
+					],
+					"path": [
+						"oauth2",
+						"userinfo"
+					]
+				},
+				"description": "\t"
+			},
+			"response": []
+		}
+	]
+}
