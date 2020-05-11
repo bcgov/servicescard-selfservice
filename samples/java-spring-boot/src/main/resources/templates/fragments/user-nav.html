@@ -1,0 +1,11 @@
+<nav id="navbar" class="navigation-main">
+	<div class="container">
+		<div class="navigation-container">
+			<ul>
+				<li><a th:href="@{'/secure/' + ${client.getRegistrationId()}}">Home</a></li>
+				<li><a th:href="@{'/secure/' + ${client.getRegistrationId()} + '/subscriptions'}">Manage Subscriptions</a></li>
+				<li><a th:href="@{'/secure/' + ${client.getRegistrationId()} + '/messages'}">View Messages</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>

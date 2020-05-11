@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="fragments/head :: common_header(~{::title})">
+	<title th:text="${client.getClientName()}"></title>
+</head>
+
+<body>
+	<div th:replace="fragments/header :: header">...</div>
+	<div class="jumbotron jumbotron-fluid">
+  		<div class="container">
+    		<h1 class="display-4">BCSC Client Service Demo</h1>
+    		<p class="lead">An example of a client service that uses BC Services Card login.</p>
+  		</div>
+	</div>
+	<div class="main-container">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+                    <h1>It's a two-step process.</h1>
+                    <div style="margin-bottom:30px;">
+                        <h2><span class="step">1</span> Login + Enrollment</h2>
+                        <p>Acting as a user of your service, you will log in. If it's the first time logging in to your service, you may ask additional questions to your users so that they can complete enrollment in your service.</p>
+                    </div>
+                    <h2><span class="step">2</span> TBD</h2>
+                    <p style="margin-bottom:30px;">View the TBD... </p>
+                    <hr>
+                    <h2>Ready?</h2>
+					<div style="margin-top: 20px;">
+						<a th:href="@{'/oauth2/authorization/' + ${client.getRegistrationId()}}" class="btn btn-primary">Login with BC Services Card</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="fragments/footer :: footer">...</div>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="fragments/head :: common_header(~{::title})">
+	<title>BCSC Sample Client</title>
+</head>
+
+<body>
+	<div th:replace="fragments/header :: header">...</div>
+
+	<div class="jumbotron jumbotron-fluid">
+	  <div class="container">
+	     <h1 class="display-4">BCSC Client Service Demo</h1>
+         <p class="lead">An example of a client service that uses BC Services Card login.</p>
+	  </div>
+	</div>
+
+	<div class="main-container">
+		<div class="container">
+			<table class="table table-striped">
+				<tr>
+					<td>
+						<h1 style="margin-bottom:20px;">Clients</h1>
+					</td>
+				</tr>
+				<tr th:each="client : ${clientList}">
+					<td>
+						<p>
+							<a th:href="@{'/home/'+${client.getRegistrationId()}}" th:text="${client.getClientName()}" ></a>
+						</p>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+	<div th:replace="fragments/footer :: footer">...</div>
+</body>
+
+</html>

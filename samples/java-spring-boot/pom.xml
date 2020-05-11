@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>ca.bc.gov.idim.samples</groupId>
+	<artifactId>bcsc-sample-client</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	
+	
+	
+	<!-- uncomment the following to package this as a WAR -->
+	<!-- <packaging>war</packaging> -->
+	<name>bcsc-sample-client</name>
+	<description>
+		Sample Spring Boot project for BCSC Clients
+	</description>
+
+	<properties>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven-war-plugin-version>3.2.3</maven-war-plugin-version>
+		<failOnMissingWebXml>false</failOnMissingWebXml>
+		<org.springframework.boot-version>2.2.1.RELEASE</org.springframework.boot-version>
+		<org.thymeleaf-version>3.0.4.RELEASE</org.thymeleaf-version>
+		<com.h2database-version>1.4.199</com.h2database-version>
+		<com.google.code.gson-version>2.8.6</com.google.code.gson-version>
+		<com.google.guava-version>28.1-jre</com.google.guava-version>
+		<com.fasterxml.jackson-version>2.9.9</com.fasterxml.jackson-version>
+		<ch.qos.logback-version>1.2.3</ch.qos.logback-version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${org.springframework.boot-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+			<version>${org.springframework.boot-version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${org.springframework.boot-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<version>${org.springframework.boot-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
+			<version>${org.thymeleaf-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+			<version>${com.h2database-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+			<version>${org.springframework.boot-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${com.google.code.gson-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${com.google.guava-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<version>${org.springframework.boot-version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+		    <version>${ch.qos.logback-version}</version>
+		</dependency>
+		
+	</dependencies>
+
+	<build>
+		<finalName>sample-client</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${org.springframework.boot-version}</version>
+				<configuration>
+					<mainClass>bcsc.sample.client.SampleClientApplication</mainClass>
+					<executable>true</executable>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Exclude application.properties from WAR -->
+<!-- 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${maven-war-plugin-version}</version>
+				<configuration>
+					<packagingExcludes>
+						WEB-INF/classes/application.properties
+					</packagingExcludes>
+				</configuration>
+			</plugin> -->
+		</plugins>
+	</build>
+
+</project>
