@@ -22,9 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import bcsc.sample.client.entity.RegisteredUser;
-import bcsc.sample.client.repository.RegisteredUserRepository;
-import  bcsc.sample.client.jwt.DefaultJWTSignatureAndDecryptionService;
-//import bcsc.sample.client.service.ClientRegistrationManager;
 
 @Controller
 public class DefaultController {
@@ -46,7 +43,6 @@ public class DefaultController {
 	}
 
 	Logger log = LoggerFactory.getLogger(DefaultController.class);
-	private RegisteredUserRepository registeredUserRepository;
 	private ClientRegistrationRepository clientRegistrationRepository;
 
 	private static final String REDIR = "redirect:";
@@ -54,13 +50,10 @@ public class DefaultController {
 
 	private String oidcIssuer;
 
-	public DefaultController(RegisteredUserRepository registeredUserRepository,
-			ClientRegistrationRepository clientRegRepo,
-			@Value("${oauth2.provider.issuer}") final String oidcIssuer ) {
-		this.registeredUserRepository = registeredUserRepository;
+	public DefaultController(ClientRegistrationRepository clientRegRepo,
+			@Value("${bcsc.sample.client.oauth2.provider.issuer}") final String oidcIssuer ) {
 		this.clientRegistrationRepository = clientRegRepo;
 		this.oidcIssuer = oidcIssuer;
-//		this.clientRegistrationManager = clregman;
 	}
 
 	@GetMapping("/")
@@ -105,28 +98,13 @@ public class DefaultController {
 
 		String issuer = (String) authorizedClient.getClientRegistration().getProviderDetails()
 				.getConfigurationMetadata().getOrDefault("issuer", oidcIssuer);
-		RegisteredUser registeredUser = registeredUserRepository.findByIssuerAndSubject(issuer,
-				authentication.getName());
-
 		ModelAndView model = new ModelAndView();
 		model.addObject(ModelVars.CLIENT, authorizedClient.getClientRegistration());
-		if (registeredUser != null) {
-			log.debug("existing user, update last login");
-			model.setViewName(Templates.INDEX);
-			registeredUser.setLastLoginAt(new Date());
-			registeredUserRepository.save(registeredUser);
-			model.addObject(ModelVars.USER, registeredUser);
-			model.addObject(ModelVars.CLIENT, authorizedClient.getClientRegistration());
-			
-		} else {
-			log.debug("first time user");
-			model.setViewName(Templates.FIRST_LOGIN);
-			model.addObject(ModelVars.USER,
-					RegisteredUser.createFromClaimsSet(authentication.getPrincipal().getAttributes(), issuer,
+		model.setViewName(Templates.FIRST_LOGIN);
+		model.addObject(ModelVars.USER,
+		RegisteredUser.createFromClaimsSet(authentication.getPrincipal().getAttributes(), issuer,
 							authorizedClient.getClientRegistration().getClientId()));
 			return model;
-		}
-		return model;
 	}
 
 	@GetMapping("/secure/{" + CLIENT_REG_PATHVAR + "}/register")
@@ -137,19 +115,11 @@ public class DefaultController {
 
 		String issuer = (String) authorizedClient.getClientRegistration().getProviderDetails()
 				.getConfigurationMetadata().getOrDefault("issuer", oidcIssuer);
-		RegisteredUser registeredUser = registeredUserRepository.findByIssuerAndSubject(issuer,
-				authentication.getName());
-
-		if (registeredUser == null) {
-			log.debug("User not registered; saving registration");
-			registeredUser = RegisteredUser.createFromClaimsSet(authentication.getPrincipal().getAttributes(), issuer,
+		RegisteredUser registeredUser = RegisteredUser.createFromClaimsSet(authentication.getPrincipal().getAttributes(), issuer,
 					authorizedClient.getClientRegistration().getClientId());
 			Date now = new Date();
 			registeredUser.setCreatedAt(now);
 			registeredUser.setLastLoginAt(now);
-			registeredUser = registeredUserRepository.save(registeredUser);
-		}
-
 		ModelAndView model = new ModelAndView(Templates.INDEX);
 		model.addObject(ModelVars.CLIENT, authorizedClient.getClientRegistration());
 		model.addObject(ModelVars.USER, registeredUser);
@@ -164,10 +134,4 @@ public class DefaultController {
 		}
 	}
 
-	RegisteredUser getRegisteredUser(final OAuth2AuthorizedClient authorizedClient,
-			final OAuth2AuthenticationToken authenticationToken) {
-		String issuer = (String) authorizedClient.getClientRegistration().getProviderDetails()
-				.getConfigurationMetadata().getOrDefault("issuer", oidcIssuer);
-		return registeredUserRepository.findByIssuerAndSubject(issuer, authenticationToken.getName());
-	}
 }

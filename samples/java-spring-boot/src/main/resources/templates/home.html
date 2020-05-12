@@ -17,14 +17,6 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-                    <h1>It's a two-step process.</h1>
-                    <div style="margin-bottom:30px;">
-                        <h2><span class="step">1</span> Login + Enrollment</h2>
-                        <p>Acting as a user of your service, you will log in. If it's the first time logging in to your service, you may ask additional questions to your users so that they can complete enrollment in your service.</p>
-                    </div>
-                    <h2><span class="step">2</span> TBD</h2>
-                    <p style="margin-bottom:30px;">View the TBD... </p>
-                    <hr>
                     <h2>Ready?</h2>
 					<div style="margin-top: 20px;">
 						<a th:href="@{'/oauth2/authorization/' + ${client.getRegistrationId()}}" class="btn btn-primary">Login with BC Services Card</a>

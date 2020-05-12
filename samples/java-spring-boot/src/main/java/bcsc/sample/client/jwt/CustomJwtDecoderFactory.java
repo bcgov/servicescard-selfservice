@@ -1,69 +1,72 @@
 package bcsc.sample.client.jwt;
 
 import java.io.File;
-import java.text.ParseException;
-import java.util.List;
-import java.util.HashSet;
 import java.util.Arrays;
-import java.util.function.Predicate;
+import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.stereotype.Service;
 import org.springframework.stereotype.Component;
 import org.springframework.context.annotation.Bean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import com.google.common.base.Strings;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.crypto.RSADecrypter;
-import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jwt.EncryptedJWT;
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.PlainJWT;
-import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.EncryptionMethod;
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.jwk.source.*;
-import com.nimbusds.jwt.*;
-import com.nimbusds.jwt.proc.*;
-import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
 import com.nimbusds.jose.proc.JWEKeySelector;
 import com.nimbusds.jose.proc.JWSKeySelector;
 import com.nimbusds.jose.proc.JWEDecryptionKeySelector;
 import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+import com.nimbusds.jwt.proc.JWTProcessor;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.PlainJWT;
+import com.nimbusds.jwt.SignedJWT;
 
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoderFactory;
-import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
-import com.nimbusds.jwt.proc.DefaultJWTProcessor;
-import com.nimbusds.jwt.proc.JWTProcessor;
-import com.nimbusds.jose.proc.SecurityContext;
 
-import bcsc.sample.client.service.KeyManagementService;
 import bcsc.sample.client.service.ClientRegistrationManager;
+
+/*
+ * This CustomJwtDecoderFactory is the simplest way currently to add decryption to the Spring Boot implementation of JWT,
+ * which currently does not support JWE out the box (if it did you could just add the values in the application.properties)
+ * By declaring a JwtDecoderFactory bean it magically gets used in place of the existing default JwtDecoderFactory.
+ * 
+ * In it we need to declare the keys which get used for encryption of the JWT as well as the signing thereof. 
+ * These keys are contained in public JWKS Url (which defines the signing public key)  and private JWKS files (which define the 
+ * encryption private key ) . 
+ * 
+ *  These file names, expected url, signing and encryption algorithms etc. are all pulled in through Spring Boot magic through the 
+ *  @ConfigurationProperties annotation from the application.properties file.
+ *  
+ *  Then they are plugged into the default Jose DefautJWTProcessor which is what Spring Boot uses by default (albeit with no decryption) 
+ *   which automagically manages the whole JWT/OIDC rigmarole for us. 
+ */
 
 @Component
 @ConfigurationProperties(prefix = "bcsc.sample.client.jwt")
 public class CustomJwtDecoderFactory  {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomJwtDecoderFactory.class);
-
-	private KeyManagementService keyManagementService;
 	
 	private String  privateJWKSFile;
 	private String  publicJWKSURL;
 	private JWEAlgorithm expectedJWEAlg;
 	private JWSAlgorithm expectedJWSAlg;
+	private EncryptionMethod expectedJWEEnc;
 	private ClientRegistrationManager clientRegistrationManager;
+
 	public String getPrivateJWKSFile() {
 		return privateJWKSFile;
 	}
@@ -81,9 +84,6 @@ public class CustomJwtDecoderFactory  {
 		this.publicJWKSURL = publicJWKSURL;
 		LOGGER.debug ("Public JWKS URL is" + publicJWKSURL);
 	}
-
-	private EncryptionMethod expectedJWEEnc;
-	
 
 	public JWSAlgorithm getExpectedJWSAlg() {
 		return expectedJWSAlg;
@@ -108,7 +108,6 @@ public class CustomJwtDecoderFactory  {
 	public void setExpectedJWEEnc(EncryptionMethod expectedJWEEnc) {
 		this.expectedJWEEnc = expectedJWEEnc;
 	}
-	
 
 	private  JWKSource getJWKSource (String keyfile, String keyId)  {
 		// Load JWK set from JSON file, etc.
@@ -118,13 +117,18 @@ public class CustomJwtDecoderFactory  {
 			JWKSource keySource = new ImmutableJWKSet(jwkSet);
 			return keySource;
 	}
-	catch (Exception e ) {LOGGER.debug("Exception in custom JWT processor " , e);return null; }
+	catch (Exception e ) {LOGGER.debug("Exception getting keysource from file " , e);return null; }
 
 	}
-
-//	public DefaultJWTSignatureAndDecryptionService(@NonNull final KeyManagementService keyManagementService) throws Throwable  {
-//		this.keyManagementService = keyManagementService;
-//	}
+	private  JWKSource getJWKSURL (String url, String keyId)  {
+		// Load JWK set from URL.
+		try {
+			JWKSource keySource = new RemoteJWKSet<>(new URL(url));
+			// Create JWK source backed by a JWK set
+			return keySource;
+		}
+		catch (Exception e ) {LOGGER.debug("Exception getting keysource from remoteURL " , e);return null; }
+	}
 	
 	@Bean
     public JwtDecoderFactory<ClientRegistration> jwtDecoderFactory() {
@@ -135,7 +139,6 @@ public class CustomJwtDecoderFactory  {
                 return decoder;
             }
         };
-
     }
 	
 	private JwtDecoder jwtDecoder() {
@@ -151,26 +154,11 @@ public class CustomJwtDecoderFactory  {
 				new JWEDecryptionKeySelector<>(expectedJWEAlg, expectedJWEEnc, getJWKSource (this.privateJWKSFile, "") );
 		jwtProcessor.setJWEKeySelector(jweKeySelector);
 		
-//		JWSKeySelector jwsKeySelector =  new JWSVerificationKeySelector<>(expectedJWSAlg, getJWKSource (this.publicJWKSURL, "") );
-// 		jwtProcessor.setJWSKeySelector(jwsKeySelector);
- 		
- 	// Set the required JWT claims for access tokens issued by the Connect2id
- 	// server, may differ with other servers
- 	//	jwtProcessor.setJWTClaimsSetVerifier(new DefaultJWTClaimsVerifier());
- 			
- 			
-// 	    new JWTClaimsSet.Builder().issuer("https://idtest.gov.bc.ca/oauth2/jwk").build(),
-// 	    new HashSet<>(Arrays.asList("sub", "iat", "exp", "scp", "cid", "jti"))));
-
- 	// Process the token
-//	 	SecurityContext ctx = null; // optional context parameter, not required here
-//	 	JWTClaimsSet claimsSet = jwtProcessor.process(encryptedJWT, null);
-//		LOGGER.debug("Returned claim set [registrationId={}, claimsSet={}].", registrationId, claimsSet.toJSONObject());
+		JWSKeySelector jwsKeySelector =  new JWSVerificationKeySelector<>(expectedJWSAlg, getJWKSURL (this.publicJWKSURL, "") );
+ 		jwtProcessor.setJWSKeySelector(jwsKeySelector);
+	
 	 	return   jwtProcessor;
-	 	
-		
-
-}
+	}
 	
 	private String resolveJwksUri(final String registrationId) {
 		ClientRegistration clientRegistration = clientRegistrationManager.getClientRegistration(registrationId);
@@ -185,22 +173,4 @@ public class CustomJwtDecoderFactory  {
 		}
 		return jwksUri;
 	}
-	
-/*
-	private JWTProcessor<SecurityContext> jwtProcessor() {
-		JWKSource<SecurityContext> jwsJwkSource = new RemoteJWKSet<>(this.jwkSetUri);
-		JWSKeySelector<SecurityContext> jwsKeySelector =
-				new JWSVerificationKeySelector<>(this.jwsAlgorithm, jwsJwkSource);
-
-		JWKSource<SecurityContext> jweJwkSource = new ImmutableJWKSet<>(new JWKSet(rsaKey()));
-		JWEKeySelector<SecurityContext> jweKeySelector =
-				new JWEDecryptionKeySelector<>(this.jweAlgorithm, this.encryptionMethod, jweJwkSource);
-
-		ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
-		jwtProcessor.setJWSKeySelector(jwsKeySelector);
-		jwtProcessor.setJWEKeySelector(jweKeySelector);
-
-		return jwtProcessor;
-	}
-*/
 }

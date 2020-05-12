@@ -17,8 +17,8 @@
 					    <span aria-hidden="true">x</span>
 					    </button>
 					</div>
-					<h1>Complete Your Enrollment</h1>
-					<div>Name of Individual Logged In</div>
+					<h1>Successful login - user details</h1>
+					<div>Name</div>
 					<div style="margin-bottom:20px;"><b><span th:text="${#authentication.principal.attributes[display_name]}"></span></b></div>
 					<div style="background: #e9ecef; padding: 10px 0px;">
 						<a class="toggleHeader" id="UserInfoHeader" href="#" data-toggle="collapse" data-target="#UserInfo" aria-expanded="false" aria-controls="UserInfo">
@@ -42,16 +42,8 @@
 						</div>
 					</div>
                     <br>
-					<div style="background: #e9ecef; padding: 10px 0px;">
-                    	<span style="background-color:#e9ecef">Your additional questions to the user would be here...</span>
-                    </div>
                     <br>
             	</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<a th:href="@{'/secure/' + ${client.getRegistrationId()} + '/register'}" class="btn btn-primary">Complete account set up</a>
-				</div>
 			</div>
 		</div>
 	</div>

@@ -6,17 +6,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 
-import javax.persistence.Entity;
+/*import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.TemporalType;*/
 
-@Entity
+//@Entity
 public class RegisteredUser {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	//@Id
+	//@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String subject;
 	private String issuer;
@@ -34,11 +34,11 @@ public class RegisteredUser {
 	private String postalCode;
 	private String country;
 	private String email;
-	@Temporal(TemporalType.TIMESTAMP)
+	//@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
-	@Temporal(TemporalType.TIMESTAMP)
+	//@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
-	@Temporal(TemporalType.TIMESTAMP)
+	//@Temporal(TemporalType.TIMESTAMP)
 	private Date lastLoginAt;
 
 	public Long getId() {
