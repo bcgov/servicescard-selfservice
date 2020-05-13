@@ -2,23 +2,28 @@
 bcsc.sample.client.oauth2.provider.issuer=bcsc-test
 spring.security.oauth2.client.provider.bcsc-test.authorization-uri=https://idtest.gov.bc.ca/login/oidc/authorize
 spring.security.oauth2.client.provider.bcsc-test.token-uri=https://idtest.gov.bc.ca/oauth2/token
+
 #This is needed to validate signature on JWT
 bcsc.sample.client.jwt.publicJWKSURL=https://idtest.gov.bc.ca/oauth2/jwk
 bcsc.sample.client.jwt.expectedJWSAlg=RS256
 #spring security jwk-set-uri is overriden by our publicJWKSURL
 #spring.security.oauth2.client.provider.bcsc-test.jwk-set-uri=https://idtest.gov.bc.ca/oauth2/jwk
+
 spring.security.oauth2.client.provider.bcsc-test.user-info-uri=https://idtest.gov.bc.ca/oauth2/userinfo
 spring.security.oauth2.client.registration.bcsc-test.authorization-grant-type=authorization_code
+
 #This is stuff you would change if you changed your application
-spring.security.oauth2.client.registration.bcsc-test.redirect-uri=http://localhost:8080/login/oauth2/code/bcsc
+spring.security.oauth2.client.registration.bcsc-test.redirect-uri=http://localhost:8080/login/oauth2/code/bcsc-test
 spring.security.oauth2.client.registration.bcsc-test.scope=openid,profile,email,address
 spring.security.oauth2.client.provider.bcsc-test.user-name-attribute=family_name
+
 #This stuff relates to encryption and MUST be considered together . In self-service you must use RSA-OAEP else encryption won't work
 # Also you MUST use the value https://services-card-jwks-demo.pathfinder.gov.bc.ca/ as the jwks_uri in self-service app
 # jwks-private.json is the private key for public key https://services-card-jwks-demo.pathfinder.gov.bc.ca/
 bcsc.sample.client.jwt.privateJWKSFile=jwks-private.json
 bcsc.sample.client.jwt.expectedJWEAlg=RSA-OAEP
-#This must be what you set up in self-service, you can choose it
+
+#This must match what you set up in self service app
 bcsc.sample.client.jwt.expectedJWEEnc=A256GCM
 spring.security.oauth2.client.registration.bcsc-test.client-id=Enter your client Id here
 spring.security.oauth2.client.registration.bcsc-test.client-secret=Enter your client secret here

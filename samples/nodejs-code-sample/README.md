@@ -18,6 +18,8 @@ In order to run this sample you need to setup a BC Services Card integration pro
 
 http://127.0.0.1:3000/oauth/callback
 
+NB: This sample app does not yet support encrypted JWT, so when you set up your proect with the self-service app be sure not to choose "Signed JWT" not "Secure JWT". 
+
 When you have completed the registration process in the BC Services Card Self Service app, you will get a key, secret and some test accounts. You will need these plus the above redirect url to setup and test the sample code. 
 
 Once you have the key, secret, redirect url and test accounts, you configure the sample app by :
