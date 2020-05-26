@@ -14,7 +14,7 @@ This application is based on Spring Boot, Spring Security including OAuth2,OIDC 
  1. Run through the [BC Services Card Self-Service app](https://selfservice-prod.pathfinder.gov.bc.ca) to get your Client ID and Secret. You can use the [help resource  on the site ](https://selfservice-prod.pathfinder.gov.bc.ca/help/help-dev)to give you more info about parameters you need to set, however there are some special values to use for this sample app : 
 
  
-    - Redirect URI : You need to have "http://localhost:8080/login/oauth2/code/bcsc=test" as one of the options for the redirect or callback uri. (this is what this sample app uses) and it needs to be registered (you can have up to 10 values registered).
+    - Redirect URI : You need to have "http://localhost:8080/login/oauth2/code/bcsc-test" as one of the options for the redirect or callback uri. (this is what this sample app uses) and it needs to be registered (you can have up to 10 values registered).
      
      - Secure JWT : It is recommended to set this ONLY after getting the sample app working as Signed JWT  (you can easily change it later in the self-service app). To facilitiate encryption of the returned JWT we have provided a JWKS which the identity provider uses to encrypt the returned JWT. This value must be entered into the JSON Web Key Set URL field
      "https://services-card-jwks-demo.pathfinder.gov.bc.ca/". Also because the jwks uses encryption algorithm RSA-OAEP this value must also be set in the Encryption Algorithm field.
