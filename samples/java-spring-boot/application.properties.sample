@@ -19,8 +19,8 @@ spring.security.oauth2.client.provider.bcsc-test.user-name-attribute=family_name
 
 #This stuff relates to encryption and MUST be considered together . In self-service you must use RSA-OAEP else encryption won't work
 # Also you MUST use the value https://services-card-jwks-demo.pathfinder.gov.bc.ca/ as the jwks_uri in self-service app
-# jwks-private.json is the private key for public key https://services-card-jwks-demo.pathfinder.gov.bc.ca/
-bcsc.sample.client.jwt.privateJWKSFile=jwks-private.json
+# jwks-private-RSA-OAEP.json is the private key for public key https://services-card-jwks-demo.pathfinder.gov.bc.ca/
+bcsc.sample.client.jwt.privateJWKSFile=jwks-private-RSA-OAEP.json
 bcsc.sample.client.jwt.expectedJWEAlg=RSA-OAEP
 
 #This must match what you set up in self service app

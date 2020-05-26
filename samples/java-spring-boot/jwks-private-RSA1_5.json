@@ -3,7 +3,7 @@
         {
             "use": "enc",
             "kty": "RSA",
-            "kid": "bcsc-demo",
+            "kid": "bcsc-test",
             "alg": "RSA1_5",
             "n": "vgJPviQj80OEzYEEtw7SwhYawSmhQPSdICnNSwvrFzmeOM1A6fXAYvLa2oVqZxSXsYbQUZ9iUBsznzxGELQD3wUano332l8Nxe47aFucKC_-z5KPw0OFSSM2wxG_jk6e-rOO_o72X-_d1_JQnd0MD9-qM9qaq4RZV2uPH1q3j7EU6Qj0z8UtRroMgWtk0Z8ZcnhXKboel_XMqIWA2uS3OIM55jkeYlP-rFylb6rRZ4xxBUjjHFIyoQuSkKuaxmYz5AHnMWiMwUgOc1qtdvPcg1FGsrNuRjagEzOgPcY3-rj0jKmRBhcDISlKMH0baVveQ-K0lSo0TGWufibayb4ehw",
             "e": "AQAB",

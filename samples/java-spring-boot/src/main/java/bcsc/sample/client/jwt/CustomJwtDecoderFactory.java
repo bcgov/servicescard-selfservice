@@ -25,6 +25,8 @@ import com.nimbusds.jose.proc.JWSKeySelector;
 import com.nimbusds.jose.proc.JWEDecryptionKeySelector;
 import com.nimbusds.jose.proc.JWSVerificationKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jose.util.DefaultResourceRetriever;
+import com.nimbusds.jose.util.ResourceRetriever;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.nimbusds.jwt.proc.JWTProcessor;
@@ -50,8 +52,14 @@ import bcsc.sample.client.service.ClientRegistrationManager;
  *  These file names, expected url, signing and encryption algorithms etc. are all pulled in through Spring Boot magic through the 
  *  @ConfigurationProperties annotation from the application.properties file.
  *  
- *  Then they are plugged into the default Jose DefautJWTProcessor which is what Spring Boot uses by default (albeit with no decryption) 
- *   which automagically manages the whole JWT/OIDC rigmarole for us. 
+ *  Then they are plugged into a Jose JWT processor (which should be the library DefautJWTProcessor but we can't use it right now, 
+ *  because of JOSE header issue, see below ) which is plugged into the Nimbus Jose framework which automagically manages the whole 
+ *  JWT/OIDC rigmarole for us.  
+ *  But, there is a small problem ...  the JOSE header returned by BC Services Card -  does not have the "cty" parameter set to "JWT" 
+ *  which it should do to indicate that the encrypted payload is in fact a JWT.
+ *  
+ *  So to workaround this we use a CustomJWTProcessor which has a 1 line change from the DefaultJWTProcessor supplied by the standard library.
+ *  
  */
 
 @Component
@@ -59,13 +67,13 @@ import bcsc.sample.client.service.ClientRegistrationManager;
 public class CustomJwtDecoderFactory  {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomJwtDecoderFactory.class);
-	
+
+	/* The below properties are pulled from the application.properties file as bcsc.sample.client.jwt.<property> */
 	private String  privateJWKSFile;
 	private String  publicJWKSURL;
 	private JWEAlgorithm expectedJWEAlg;
 	private JWSAlgorithm expectedJWSAlg;
 	private EncryptionMethod expectedJWEEnc;
-	private ClientRegistrationManager clientRegistrationManager;
 
 	public String getPrivateJWKSFile() {
 		return privateJWKSFile;
@@ -123,8 +131,8 @@ public class CustomJwtDecoderFactory  {
 	private  JWKSource getJWKSURL (String url, String keyId)  {
 		// Load JWK set from URL.
 		try {
-			JWKSource keySource = new RemoteJWKSet<>(new URL(url));
-			// Create JWK source backed by a JWK set
+			ResourceRetriever jwkSetRetriever = new DefaultResourceRetriever(30000, 30000);
+			JWKSource keySource = new RemoteJWKSet(new URL(url), jwkSetRetriever);
 			return keySource;
 		}
 		catch (Exception e ) {LOGGER.debug("Exception getting keysource from remoteURL " , e);return null; }
@@ -148,29 +156,14 @@ public class CustomJwtDecoderFactory  {
 	@SuppressWarnings("unchecked")
 	private JWTProcessor<SecurityContext> getExtJwtProcessor() {
 
-		LOGGER.debug("In custom JWT processor ");
-		ConfigurableJWTProcessor<SecurityContext> jwtProcessor =    new DefaultJWTProcessor<>();
+		ConfigurableJWTProcessor<SecurityContext> jwtProcessor =    new CustomJWTProcessor<>();
 		JWEKeySelector<SecurityContext> jweKeySelector =   
 				new JWEDecryptionKeySelector<>(expectedJWEAlg, expectedJWEEnc, getJWKSource (this.privateJWKSFile, "") );
 		jwtProcessor.setJWEKeySelector(jweKeySelector);
 		
 		JWSKeySelector jwsKeySelector =  new JWSVerificationKeySelector<>(expectedJWSAlg, getJWKSURL (this.publicJWKSURL, "") );
  		jwtProcessor.setJWSKeySelector(jwsKeySelector);
-	
 	 	return   jwtProcessor;
 	}
 	
-	private String resolveJwksUri(final String registrationId) {
-		ClientRegistration clientRegistration = clientRegistrationManager.getClientRegistration(registrationId);
-		String jwksUri = null;
-
-		if (clientRegistration != null) {
-			jwksUri = (String) clientRegistration.getProviderDetails().getJwkSetUri();
-			if (jwksUri == null
-					&& clientRegistration.getProviderDetails().getConfigurationMetadata().containsKey("jwks_uri")) {
-				jwksUri = (String) clientRegistration.getProviderDetails().getConfigurationMetadata().get("jwks_uri");
-			}
-		}
-		return jwksUri;
-	}
 }

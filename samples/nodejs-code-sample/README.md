@@ -16,7 +16,7 @@ Note that this is currently ONLY available to BC BPS (Broader Public Sector)  cl
 
 In order to run this sample you need to setup a BC Services Card integration project using the [BC Services Card Self-Service Application](https://sso-prod.pathfinder.gov.bc.ca/). When you work through this application you will be required to enter one or more redirect URLs, ensure that you add the following as one of them, it is used by this sample app :
 
-http://127.0.0.1:3000/oauth/callback
+http://localhost:3000/oauth/callback
 
 NB: This sample app does not yet support encrypted JWT, so when you set up your proect with the self-service app be sure not to choose "Signed JWT" not "Secure JWT". 
 

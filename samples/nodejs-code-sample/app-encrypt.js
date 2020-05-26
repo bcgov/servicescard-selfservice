@@ -34,9 +34,9 @@ const client_params = {
         client_id: process.env.OIDC_CLIENT_ID,
         client_secret : process.env.OIDC_CLIENT_SECRET,
         //id_token_encrypted_response_alg : "RSA1_5",
-        id_token_encrypted_response_alg : "RS256",
+        id_token_encrypted_response_alg : "RSA-OAEP",
         id_token_encrypted_response_enc: "A256GCM",
-        userinfo_encrypted_response_alg:"RS256",
+        userinfo_encrypted_response_alg:"RSA-OAEP",
         userinfo_encrypted_response_enc: "A256GCM"
 
 };
