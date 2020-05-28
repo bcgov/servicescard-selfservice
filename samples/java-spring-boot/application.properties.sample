@@ -1,4 +1,4 @@
-#This is all stuff you wouldn't change unless you changed OIDC provider from bcsc-test
+#This is all stuff you wouldn't change unless you changed OIDC provider from bcsc-test to something else
 bcsc.sample.client.oauth2.provider.issuer=bcsc-test
 spring.security.oauth2.client.provider.bcsc-test.authorization-uri=https://idtest.gov.bc.ca/login/oidc/authorize
 spring.security.oauth2.client.provider.bcsc-test.token-uri=https://idtest.gov.bc.ca/oauth2/token
@@ -6,6 +6,7 @@ spring.security.oauth2.client.provider.bcsc-test.token-uri=https://idtest.gov.bc
 #This is needed to validate signature on JWT
 bcsc.sample.client.jwt.publicJWKSURL=https://idtest.gov.bc.ca/oauth2/jwk
 bcsc.sample.client.jwt.expectedJWSAlg=RS256
+
 #spring security jwk-set-uri is overriden by our publicJWKSURL
 #spring.security.oauth2.client.provider.bcsc-test.jwk-set-uri=https://idtest.gov.bc.ca/oauth2/jwk
 

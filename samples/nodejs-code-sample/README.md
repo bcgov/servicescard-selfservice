@@ -40,4 +40,4 @@ From the command line run
 ```
 
 ### Local testing
-By default these samples will run on `http://localhost:3000`.
+By default this sample application runs on `http://localhost:3000`
