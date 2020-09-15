@@ -41,8 +41,8 @@ the following will need to come from your BC Services Card Self Service Dev Requ
 * client_secret --> see arrow below
  <img src="images/section3_img4.png" width="150">
 
-* Scope= Openid profile ![ScopeDet](images/section3_img5.PNG)
-* Redirect URI -> redirect_uri ![RedirectDet](images/section3_img6.PNG)
+* Scope= Openid profile ![ScopeDet](images/section3_img5.png)
+* Redirect URI -> redirect_uri ![RedirectDet](images/section3_img6.png)
 
 In postman it should look like this
 <img src="images/section3_img7.png" width="150">  
